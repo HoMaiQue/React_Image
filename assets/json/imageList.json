@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1",
+        "name": "Central Data Assistant",
+        "imageSrc": "assets/images/image1.jpg"
+    },
+    {
+        "id": "2",
+        "name": "Product Metrics Administrator",
+        "imageSrc": "assets/images/image2.jpg"
+    },
+    {
+        "id": "3",
+        "name": "Dynamic Configuration Engineer",
+        "imageSrc": "assets/images/image3.jpg"
+    },
+    {
+        "id": "4",
+        "name": "Principal Identity Orchestrator",
+        "imageSrc": "assets/images/image4.jpg"
+    }
+]

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:react_image/model/image.dart';
 import 'package:react_image/provider/image_provider.dart';
 import 'package:react_image/widget/body_swiper.dart';
 
@@ -8,7 +7,7 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (_) => ImagePr(),
-      child: MaterialApp(
+      child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: MyApp(),
       ),
@@ -16,31 +15,37 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({super.key});
-  final List<ImageModel> imageList = [
-    ImageModel(
-        id: "1",
-        name: "Central Data Assistant",
-        imageSrc: "assets/images/image1.jpg"),
-    ImageModel(
-        id: "2",
-        name: "Product Metrics Administrator",
-        imageSrc: "assets/images/image2.jpg"),
-    ImageModel(
-        id: "3",
-        name: "Dynamic Configuration Engineer",
-        imageSrc: "assets/images/image3.jpg"),
-    ImageModel(
-        id: "4",
-        name: "Principal Identity Orchestrator",
-        imageSrc: "assets/images/image4.jpg"),
-  ];
+enum FilterOptions { all, favorite }
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Provider.of<ImagePr>(context, listen: false).readJson();
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(12);
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(
+            colors: [Colors.red, Colors.yellow],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )),
+        ),
         centerTitle: true,
         title: const Text(
           "Favorite Image",
@@ -51,7 +56,7 @@ class MyApp extends StatelessWidget {
           child: Consumer<ImagePr>(builder: (context, image, child) {
             return Badge(
               label: Text(
-                image.favorite.toString(),
+                image.countFavorites.toString(),
                 style: const TextStyle(color: Colors.white),
               ),
               child: const Icon(Icons.favorite),
@@ -60,13 +65,27 @@ class MyApp extends StatelessWidget {
         ),
         actions: [
           PopupMenuButton(
+              onSelected: (value) {
+                setState(() {
+                  if (value == FilterOptions.favorite) {
+                    isFavorite = true;
+                    return;
+                  }
+                  isFavorite = false;
+                });
+              },
               itemBuilder: (_) => [
-                    const PopupMenuItem(child: Text("Show all")),
-                    const PopupMenuItem(child: Text("Favorite image")),
+                    const PopupMenuItem(
+                      value: FilterOptions.all,
+                      child: Text("Show all"),
+                    ),
+                    const PopupMenuItem(
+                        value: FilterOptions.favorite,
+                        child: Text("Favorite image")),
                   ])
         ],
       ),
-      body: BodySwipe(list: imageList),
+      body: BodySwipe(isFavorite: isFavorite),
     );
   }
 }
